@@ -4,41 +4,41 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 public class NopCommerceTestingCls {
 
 	static public WebDriver driver = new ChromeDriver();
+	static public Actions  actionProvider= new Actions(driver);
 
 	public static void main(String[] args) {
 		driver.get("https://admin-demo.nopcommerce.com/");
+		driver.manage().window().maximize();
+		
 		assertPageUrl("https://admin-demo.nopcommerce.com/login?ReturnUrl=%2Fadmin%2F");
 
-//			  - assert the page has a login button
 		Boolean loginButtonExists = driver.findElements(By.className("login-button")).size() > 0;
 		Assert.assertTrue(loginButtonExists);
 		
-//			  - assert the email is filled.
 		Boolean emailNotEmpty = !driver.findElement(By.id("Email")).getAttribute("value").equals("");
 		Assert.assertTrue(emailNotEmpty);
 
-//			  - assert the password is filled.
 		Boolean passwordNotEmpty = !driver.findElement(By.id("Password")).getAttribute("value").equals("");
 		Assert.assertTrue(passwordNotEmpty);
 		
-//			  - check the Remember me checkbox.
 		WebElement rememberMeCheckbox = driver.findElement(By.id("RememberMe"));
 		rememberMeCheckbox.click();
-//		      - assert the rememebr me chekcbox is checked.
-
 		Assert.assertTrue(rememberMeCheckbox.isSelected());
 		
 		WebElement loginButton = driver.findElement(By.className("login-button"));
+		actionProvider.moveToElement(loginButton).build().perform();
+		String loginButtonHover = loginButton.getCssValue("background-color");
+		Assert.assertEquals("rgba(36, 142, 206, 1)",loginButtonHover);
+		
+		loginButton.click();
+		
 
-//			  - assert hover over the login button.
-//
-//			- Click on the login button.
-//
 //			  - assert the url has "admin"
 //			  - assert the page title.
 //			  - assert the user name "John Smith"
@@ -228,7 +228,7 @@ public class NopCommerceTestingCls {
 //			    - assert the windows is closed.
 //			    - assert the applied products table is filled with the selected product.
 
-		driver.close();
+		//driver.close();
 	}
 
 	public static void assertPageUrl(String expectedUrl) {
