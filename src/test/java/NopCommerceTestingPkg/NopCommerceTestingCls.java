@@ -10,13 +10,14 @@ import org.testng.Assert;
 public class NopCommerceTestingCls {
 
 	static public WebDriver driver = new ChromeDriver();
-	static public Actions  actionProvider= new Actions(driver);
+	static public Actions actionProvider = new Actions(driver);
 
 	public static void main(String[] args) {
 		driver.get("https://admin-demo.nopcommerce.com/");
 		driver.manage().window().maximize();
 		
 		assertPageUrl("https://admin-demo.nopcommerce.com/login?ReturnUrl=%2Fadmin%2F");
+		assertPageTitle("Your store. Login");
 
 		Boolean loginButtonExists = driver.findElements(By.className("login-button")).size() > 0;
 		Assert.assertTrue(loginButtonExists);
@@ -38,26 +39,37 @@ public class NopCommerceTestingCls {
 		
 		loginButton.click();
 		
+		assertPageUrl("https://admin-demo.nopcommerce.com/admin/");
+		assertPageTitle("Dashboard / nopCommerce administration");
+		assertPageHeading("Dashboard");
+		
+		Boolean checkUserName = driver.findElement(By.xpath("//div[@id=\"navbarText\"]/ul/li[2]")).getText().equals("John Smith");
+		Assert.assertTrue(checkUserName);
+		
+		Boolean checkSidebarVisible = !driver.findElement(By.className("os-content-glue")).getCssValue("width").equals("73px");
+		Assert.assertTrue(checkSidebarVisible);
+		checkActiveNavItem("ul.nav a[href=\"/Admin\"]");
+		 
+		WebElement catalogLink = driver.findElement(By.xpath("//nav/ul/li[2]"));
+		
+//			  TODO - assert hover over Catalog // Nothing really seams to happen on the dom. needs mor investagtion
 
-//			  - assert the url has "admin"
-//			  - assert the page title.
-//			  - assert the user name "John Smith"
-//			  - assert the sidebar menu is visible.
-//			  - assert the current active item in the page is the "Dashboard"
-//			  - assert hover over Catalog
-//
-//			- Click on Catalog link.
-//
-//			  - assert the Catalog is the current active item
-//			  - assert the submenu is visible.
-//			  - assert the arrow changes.
-//
-//			- Click on Products link.
-//
-//			  - assert the url contains "Product/List".
-//			  - assert the page title.
-//			  - assert the Products is the current activ item.
-//			  - assert the page heading is "Products"
+		catalogLink.click();
+		hasClass(catalogLink, "menu-open");
+		Boolean catalogSubMenuIsVisible = driver.findElement(By.xpath("//nav/ul/li[2]/ul")).getCssValue("display").equals("block");
+		Assert.assertTrue(catalogSubMenuIsVisible);
+		
+		WebElement porductsLink = driver.findElement(By.cssSelector("ul.nav a[href=\"/Admin/Product/List\"]"));
+		actionProvider.moveToElement(porductsLink).build().perform();
+		String productLinkHover = porductsLink.getCssValue("color");
+		Assert.assertEquals("rgba(255, 255, 255, 1)",productLinkHover);
+		
+		porductsLink.click();
+		assertPageUrl("https://admin-demo.nopcommerce.com/Admin/Product/List");
+		assertPageTitle("Products / nopCommerce administration");
+		assertPageHeading("Products");
+		checkActiveNavItem("ul.nav a[href=\"/Admin/Product/List\"]");
+		
 //			  - assert hover over the Add new button.
 //			  - assert the arrow changes.
 //
@@ -234,6 +246,34 @@ public class NopCommerceTestingCls {
 	public static void assertPageUrl(String expectedUrl) {
 		String URL = driver.getCurrentUrl();
 		Assert.assertEquals(URL, expectedUrl);
+	}
+
+	public static void assertPageTitle(String expectedTitle) {
+		String title = driver.getTitle();
+		Assert.assertEquals(title, expectedTitle);
+	}
+
+	public static void assertPageHeading(String expectedHeading) {
+		String title = driver.findElement(By.cssSelector(".content-header h1")).getText();
+		Assert.assertEquals(title, expectedHeading);
+	}
+
+	public static void checkActiveNavItem(String locator) {
+		WebElement elem = driver.findElement(By.cssSelector(locator));
+		Boolean isActive = hasClass(elem, "active");
+		Assert.assertTrue(isActive);
+	}
+
+	public static Boolean hasClass(WebElement element, String elemClass) {
+		String classes = element.getAttribute("class");
+		for (String c : classes.split(" ")) {
+			if (c.equals(elemClass)) {
+				return true;
+			}
+		}
+
+		return false;
+
 	}
 
 }
