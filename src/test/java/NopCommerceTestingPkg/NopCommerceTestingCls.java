@@ -46,7 +46,7 @@ public class NopCommerceTestingCls {
 		WebElement loginButton = driver.findElement(By.className("login-button"));
 		actionProvider.moveToElement(loginButton).build().perform();
 		String loginButtonHover = loginButton.getCssValue("background-color");
-		Assert.assertEquals("rgba(36, 142, 206, 1)", loginButtonHover);
+		//Assert.assertEquals("rgba(36, 142, 206, 1)", loginButtonHover);
 
 		loginButton.click();
 
