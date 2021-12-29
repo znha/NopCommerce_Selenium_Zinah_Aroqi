@@ -1,6 +1,7 @@
 package NopCommerceTestingPkg;
 
 import java.time.Duration;
+import java.util.Random;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -17,6 +18,7 @@ public class NopCommerceTestingCls {
 
 	static public WebDriver driver = new ChromeDriver();
 	static public Actions actionProvider = new Actions(driver);
+	static public Random rnd = new Random();
 
 	public static void main(String[] args) throws InterruptedException {
 		driver.get("https://admin-demo.nopcommerce.com/");
@@ -103,7 +105,8 @@ public class NopCommerceTestingCls {
 		}
 
 		WebElement productName = driver.findElement(By.id("Name"));
-		String fristProduct = "first Prodcut By zinah";
+		String fristProduct = "first Prodcut By zinah " + rnd.nextInt(50);
+		;
 		productName.sendKeys(fristProduct);
 		Assert.assertEquals(productName.getAttribute("value"), fristProduct);
 //		  - assert hovering over the ? button
@@ -161,12 +164,6 @@ public class NopCommerceTestingCls {
 		// jse.executeScript("document.getElementById('Price').setAttribute('value',
 		// '200');");
 
-//			  - Click on increment button.
-//			    - assert incrementing the field.
-//			  - Click on decrement button.
-//			    - assert decrenmenting the field.
-//
-//			- Check Tax exempt checkbox.
 		WebElement taxExemp = driver.findElement(By.id("IsTaxExempt"));
 		taxExemp.click();
 		Assert.assertTrue(taxExemp.isSelected());
@@ -174,29 +171,47 @@ public class NopCommerceTestingCls {
 		WebElement pnlTaxCategory = driver.findElement(By.id("pnlTaxCategory"));
 		hasClass(pnlTaxCategory, "d-none");
 //			  - assert hovering over the ? button
-
 		Boolean InventoryCardIsCollapsed = checkCardIsCollapsed("product-inventory");
 		if (InventoryCardIsCollapsed) {
 			driver.findElement(By.id("product-inventory")).click();
 		}
-//			- Select the inventory method.
-//
-//			  - assert the selected item "Track Inventory".
+
 //			  - assert hovering over the ? button
 		Select inverntoryMethod = new Select(driver.findElement(By.id("ManageInventoryMethodId")));
 		inverntoryMethod.selectByValue("1");
 
 //			- Click on save button.
-//
-//			  - assert hovering over the button.
-//			  - assert the url contains "Product/List"
-//			  - assert the succes message appears with the text "The new product has been added successfully."
+		WebElement saveNewProductBtn = driver.findElement(By.cssSelector("[name = \"save\"]"));
+		actionProvider.moveToElement(saveNewProductBtn).build().perform();
+		String saveNewProductBtnHover = saveNewProductBtn.getCssValue("background-color");
+		// Assert.assertEquals("rgba(70, 126, 159, 1)",saveNewProductBtnHover);
+		saveNewProductBtn.click();
+		assertPageUrl("https://admin-demo.nopcommerce.com/Admin/Product/List");
+		assertPageTitle("Products / nopCommerce administration");
+		assertPageHeading("Products");
+		Assert.assertTrue(driver.findElement(By.cssSelector(".alert-success")).getText()
+				.contains("The new product has been added successfully."));
 //			  - assert the new proudct appears in the table BY:
-//			    - assert the search tab is opened.
-//			    - Fill product name and assert that.
-//			    - Click on the Search button.
+		WebElement productSearchCard = driver.findElement(By.cssSelector(".card-search .search-row"));
+		Boolean searchProductsOpend = hasClass(productSearchCard, "opened");
+		if (!searchProductsOpend) {
+			productSearchCard.click();
+		}
+
+		WebElement searchProductName = driver.findElement(By.id("SearchProductName"));
+		searchProductName.sendKeys(fristProduct);
+		WebElement searchProductsBtn = driver.findElement(By.id("search-products"));
+		searchProductsBtn.click();
+
 //			    - assert there is a row that has the filled proudct info.
-//
+		Thread.sleep(5000); // It didn't work except with it
+		WebElement producRow = (new WebDriverWait(driver, Duration.ofSeconds(5))).until(ExpectedConditions
+				.visibilityOf(driver.findElement(By.xpath("//table/tbody/tr/td[3]"))));
+		Assert.assertTrue(producRow.getSize().equals(1));
+		WebElement productsTable = driver.findElement(By.id("products-grid_wrapper"));
+//		Assert.assertTrue(producRow.getText().contains(fristProduct));
+		Assert.assertTrue(productsTable.getText().contains(fristProduct));
+
 //			- Click on Promotions link
 //
 //			  - assert the Promoitions link is the current active element.
