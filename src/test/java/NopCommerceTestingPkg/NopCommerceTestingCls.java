@@ -26,7 +26,6 @@ public class NopCommerceTestingCls {
 	public static void main(String[] args) throws InterruptedException {
 		driver.get("https://admin-demo.nopcommerce.com/");
 		driver.manage().window().maximize();
-		JavascriptExecutor jse = (JavascriptExecutor) driver;
 
 		assertPageUrl("https://admin-demo.nopcommerce.com/login?ReturnUrl=%2Fadmin%2F");
 		assertPageTitle("Your store. Login");
@@ -119,7 +118,6 @@ public class NopCommerceTestingCls {
 		Assert.assertEquals(shortDescription.getAttribute("value"), shortDescriptionText);
 
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-		// Thread.sleep(5000);
 		driver.switchTo().frame("FullDescription_ifr");
 		WebElement fullDescription = driver.findElement(By.id("tinymce"));
 		String fullDescriptionText = "first Prodcut full description By zinah";
@@ -151,17 +149,17 @@ public class NopCommerceTestingCls {
 		WebElement priceInput = driver.findElement(By.cssSelector("#product-price-area input[role=\"spinbutton\"]"));
 		actionProvider.moveToElement(priceInput).click().perform();
 		WebElement priceInputHidden = driver.findElement(By.id("Price"));
-		Thread.sleep(5000);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 		priceInputHidden.sendKeys(price);
 		Assert.assertEquals(priceInputHidden.getAttribute("value"), "0" + price);
 
 		WebElement taxExemp = driver.findElement(By.id("IsTaxExempt"));
 		taxExemp.click();
 		Assert.assertTrue(taxExemp.isSelected());
-		
+
 		WebElement pnlTaxCategory = driver.findElement(By.id("pnlTaxCategory"));
 		hasClass(pnlTaxCategory, "d-none");
-		
+
 		Boolean InventoryCardIsCollapsed = checkCardIsCollapsed("product-inventory");
 		if (InventoryCardIsCollapsed) {
 			driver.findElement(By.id("product-inventory")).click();
@@ -176,14 +174,14 @@ public class NopCommerceTestingCls {
 		actionProvider.moveToElement(saveNewProductBtn).build().perform();
 		String saveNewProductBtnHover = saveNewProductBtn.getCssValue("background-color");
 		// Assert.assertEquals("rgba(70, 126, 159, 1)",saveNewProductBtnHover);+
-		
+
 		saveNewProductBtn.click();
 		assertPageUrl("https://admin-demo.nopcommerce.com/Admin/Product/List");
 		assertPageTitle("Products / nopCommerce administration");
 		assertPageHeading("Products");
 		Assert.assertTrue(driver.findElement(By.cssSelector(".alert-success")).getText()
 				.contains("The new product has been added successfully."));
-		
+
 		WebElement productSearchCard = driver.findElement(By.cssSelector(".card-search .search-row"));
 		Boolean searchProductsOpend = hasClass(productSearchCard, "opened");
 		if (!searchProductsOpend) {
@@ -220,8 +218,7 @@ public class NopCommerceTestingCls {
 		WebElement addNewDiscountBtn = driver.findElement(By.cssSelector("a[href=\"/Admin/Discount/Create\"]"));
 		actionProvider.moveToElement(addNewDiscountBtn).build().perform();
 		String addNewDiscountBtnHover = addNewDiscountBtn.getCssValue("background-color");
-		// Assert.assertEquals("rgba(70, 126, 159, 1)",addNewProductBtnHover); 
-		
+		// Assert.assertEquals("rgba(70, 126, 159, 1)",addNewProductBtnHover);
 
 		addNewDiscountBtn.click();
 		assertPageUrl("https://admin-demo.nopcommerce.com/Admin/Discount/Create");
@@ -312,10 +309,12 @@ public class NopCommerceTestingCls {
 		String discountOptionInEdit = discountTypeInEdit.getFirstSelectedOption().getAttribute("value");
 		Assert.assertEquals("2", discountOptionInEdit);
 
+		String startDatTxtNewFormat = "12/31/2021 12:00:00 AM";
+		String endDateTextNewFormat = "2/28/2022 12:00:00 AM";
 		WebElement startDateInputInEdit = driver.findElement(By.id("StartDateUtc"));
-		Assert.assertEquals(startDateInputInEdit.getAttribute("value"), startDatTxt);
+		Assert.assertEquals(startDateInputInEdit.getAttribute("value"), startDatTxtNewFormat);
 		WebElement endDateInputInEdit = driver.findElement(By.id("EndDateUtc"));
-		Assert.assertEquals(endDateInputInEdit.getAttribute("value"), endDateText);		
+		Assert.assertEquals(endDateInputInEdit.getAttribute("value"), endDateTextNewFormat);
 
 		Boolean appliedProductsCardIsCollapsed = checkCardIsCollapsed("discount-applied-to-products");
 		if (appliedProductsCardIsCollapsed) {
@@ -357,11 +356,13 @@ public class NopCommerceTestingCls {
 		saveProductToDiscountBtn.click();
 
 		driver.switchTo().window(winHandleBefore);
+		//driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+		Thread.sleep(5000);
 		List<WebElement> discountProductRow = driver
-				.findElements(By.xpath("//table[@aria-describedby=\"products-grid_info\"]/tbody/tr[1]/td[1]"));
+				.findElements(By.xpath("//*[@id=\"products-grid\"]/tbody/tr/td[1]"));
 		Assert.assertTrue(discountProductRow.get(0).getText().contains(fristProduct));
 
-		driver.close();
+		// driver.close();
 	}
 
 	public static void assertPageUrl(String expectedUrl) {
