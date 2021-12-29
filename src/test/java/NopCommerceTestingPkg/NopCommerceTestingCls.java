@@ -76,7 +76,8 @@ public class NopCommerceTestingCls {
 		WebElement porductsLink = driver.findElement(By.cssSelector("ul.nav a[href=\"/Admin/Product/List\"]"));
 		actionProvider.moveToElement(porductsLink).build().perform();
 		String productLinkHover = porductsLink.getCssValue("color");
-		Assert.assertEquals("rgba(255, 255, 255, 1)", productLinkHover);
+		//driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+		//Assert.assertEquals("rgba(255, 255, 255, 1)", productLinkHover);
 
 		porductsLink.click();
 		assertPageUrl("https://admin-demo.nopcommerce.com/Admin/Product/List");
@@ -87,7 +88,8 @@ public class NopCommerceTestingCls {
 		WebElement addNewProductBtn = driver.findElement(By.cssSelector("a[href=\"/Admin/Product/Create\"]"));
 		actionProvider.moveToElement(addNewProductBtn).build().perform();
 		String addNewProductBtnHover = addNewProductBtn.getCssValue("background-color");
-		// Assert.assertEquals("rgba(70, 126, 159, 1)",addNewProductBtnHover); // it
+		
+		 Assert.assertEquals("rgba(70, 126, 159, 1)",addNewProductBtnHover); // it
 		// evaluates to tow different values ??
 
 		addNewProductBtn.click();
