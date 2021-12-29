@@ -96,6 +96,7 @@ public class NopCommerceTestingCls {
 		WebElement productName = driver.findElement(By.id("Name"));
 		String fristProduct = "first Prodcut By zinah";
 		productName.sendKeys(fristProduct);
+		Assert.assertEquals(productName.getAttribute("value"), fristProduct);
 //
 //			  - assert filling the product name.
 //			  - assert hovering over the ? button
