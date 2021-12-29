@@ -1,11 +1,14 @@
 package NopCommerceTestingPkg;
 
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 public class NopCommerceTestingCls {
@@ -128,8 +131,16 @@ public class NopCommerceTestingCls {
 //			  - assert hovering over the ? button
 //
 //			- Fill the Categories field.
-		Select categoriesSelect = new Select(driver.findElement(By.id("SelectedCategoryIds")));
-		categoriesSelect.selectByValue("1");
+		
+		driver.findElement(By.cssSelector(".k-multiselect-wrap")).click();
+		WebElement categoriesSelect = (new WebDriverWait(driver, Duration.ofSeconds(5)))
+     		   .until(ExpectedConditions.elementToBeClickable(By.xpath("//ul[@id=\"SelectedCategoryIds_listbox\"]/li[1]")));
+		categoriesSelect.click();
+		WebElement categoriesTags = (new WebDriverWait(driver, Duration.ofSeconds(5)))
+	     		   .until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//ul[@id=\"SelectedCategoryIds_taglist\"]/li[1]"))));
+		
+		Assert.assertEquals(categoriesSelect.getText(),categoriesTags.getText() );
+		
 
 //			  - assert filling the categories field.
 //			  - assert hovering over the ? button
