@@ -266,51 +266,68 @@ public class NopCommerceTestingCls {
 		discountAmmountInputtHidden.sendKeys(discountAmmount);
 		Assert.assertEquals(discountAmmountInputtHidden.getAttribute("value"), "0" + discountAmmount);
 		
-		WebElement statrtDateBtn = driver.findElement(By.cssSelector("[aria-controls=\"StartDateUtc_dateview\"]"));
-		statrtDateBtn.click();
+//		WebElement statrtDateBtn = driver.findElement(By.cssSelector("[aria-controls=\"StartDateUtc_dateview\"]"));
+//		statrtDateBtn.click();
 		WebElement startDateInput = driver.findElement(By.id("StartDateUtc"));
 		String startDatTxt = "12/31/2021 12:00 AM";
 		startDateInput.sendKeys(startDatTxt);
 		Assert.assertEquals(startDateInput.getAttribute("value"), startDatTxt);
 		
-		WebElement endDateBtn = driver.findElement(By.cssSelector("[aria-controls=\"EndDateUtc_dateview\"]"));
-		endDateBtn.click();
+//		WebElement endDateBtn = driver.findElement(By.cssSelector("[aria-controls=\"EndDateUtc_dateview\"]"));
+//		endDateBtn.click();
 		WebElement endDateInput = driver.findElement(By.id("EndDateUtc"));
 		String endDateText = "2/28/2022 12:00 AM";
 		endDateInput.sendKeys(endDateText);
 		Assert.assertEquals(endDateInput.getAttribute("value"), endDateText);
 		
-		
+	//	driver.findElement(By.xpath("//div[@class=\"card-body\"][1]")).click();
 
-	
-//			- Fill the start date.
-//
-//			  - assert the filled value.
-//			  - assert the tooltip.
-//
-//			- Fill the end date
-//			  - assert the filled value.
-//			  - assert the tooltip.
-//			  - assert the end date is after the start date.
-//
-//			- Click on save.
-//			  - assert hovering over the button.
-//			  - assert the url contains "Discount/List"
-//			  - assert the success message is visible and contains "The new discount has been added successfully."
-//			  - assert the discount appears in the table.
-//			    - assert the search tab is opened.
-//			    - Fill discount name and assert that.
-//			    - Click on the Search button.
-//			    - assert there is a row that has the filled discount info.
-//
+		WebElement saveNewDiscountBtn = driver.findElement(By.cssSelector("[name = \"save\"]"));
+		actionProvider.moveToElement(saveNewDiscountBtn).build().perform();
+		String saveNewDiscountBtnHover = saveNewDiscountBtn.getCssValue("background-color");
+		// Assert.assertEquals("rgba(70, 126, 159, 1)",saveNewDiscountBtnHover);
+		
+		saveNewDiscountBtn.click();
+		assertPageUrl("https://admin-demo.nopcommerce.com/Admin/Discount/List");
+		assertPageTitle("Discounts / nopCommerce administration");
+		assertPageHeading("Discounts");
+		Assert.assertTrue(driver.findElement(By.cssSelector(".alert-success")).getText()
+				.contains("The new discount has been added successfully."));
+		
+		WebElement discountSearchCard = driver.findElement(By.cssSelector(".card-search .search-row"));
+		Boolean discountProductsOpend = hasClass(discountSearchCard, "opened");
+		if (!discountProductsOpend) {
+			discountSearchCard.click();
+		}
+
+		WebElement searchDiscountName = driver.findElement(By.id("SearchDiscountName"));
+		searchDiscountName.sendKeys(discountNametxt);
+		WebElement searchDiscountsBtn = driver.findElement(By.id("search-discounts"));
+		searchDiscountsBtn.click();
+
+//			    - assert there is a row that has the filled proudct info.
+		Thread.sleep(5000); // It didn't work except with it
+		List<WebElement> discountRow = driver.findElements(By.xpath("//table/tbody/tr/td[1]"));
+		Assert.assertTrue(discountRow.get(0).getText().contains(discountNametxt));
+
+		WebElement EditDiscountBtn = driver.findElement(By.xpath("//table/tbody/tr/td[7]"));
+		actionProvider.moveToElement(EditDiscountBtn).build().perform();
+		String EditDiscountBtnHover = EditDiscountBtn.getCssValue("background-color");
+		// Assert.assertEquals("rgba(248, 249, 250, 1)",EditDiscountBtnHover);
+
+		EditDiscountBtn.click();
+		assertPageUrl("https://admin-demo.nopcommerce.com/Admin/Discount/Edit");
+		assertPageTitle("Edit discount details / nopCommerce administration");
+		assertPageHeading("Edit discount details - "+discountNametxt);
+
+		Boolean discountInfoCardIsCollapsedAgain = checkCardIsCollapsed("discount-info");
+		if (discountInfoCardIsCollapsedAgain) {
+			driver.findElement(By.id("discount-info")).click();
+		}
 //			- Click on Edit of the new Discount.
+		
 //			    - assert hover over the edit button.
-//			    - assert the url has "Discount/Edit".
-//			    - assert the page title.
-//			    - assert the heading of the page is "Edit discount details".
-//			    - assert the name of the discount in the heading.
-//			    - assert the discount info tab is open.
-//			    - assert the name input.
+//			   //			    - assert the name input.
 //			    - assert the disoucnt type.
 //			    - assert the start date.
 //			    - assert the end date.
@@ -346,17 +363,17 @@ public class NopCommerceTestingCls {
 
 	public static void assertPageUrl(String expectedUrl) {
 		String URL = driver.getCurrentUrl();
-		Assert.assertEquals(URL, expectedUrl);
+		Assert.assertTrue(URL.contains(expectedUrl));
 	}
 
 	public static void assertPageTitle(String expectedTitle) {
 		String title = driver.getTitle();
-		Assert.assertEquals(title, expectedTitle);
+		Assert.assertTrue(title.contains(expectedTitle));
 	}
 
 	public static void assertPageHeading(String expectedHeading) {
-		String title = driver.findElement(By.cssSelector(".content-header h1")).getText();
-		Assert.assertEquals(title, expectedHeading);
+		String heading = driver.findElement(By.cssSelector(".content-header h1")).getText();
+		Assert.assertTrue( heading.contains(expectedHeading));
 	}
 
 	public static void checkActiveNavItem(String locator) {
