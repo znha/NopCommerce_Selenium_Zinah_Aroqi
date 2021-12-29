@@ -21,6 +21,7 @@ public class NopCommerceTestingCls {
 	static public WebDriver driver = new ChromeDriver();
 	static public Actions actionProvider = new Actions(driver);
 	static public Random rnd = new Random();
+	static public Random skuRnd = new Random();
 
 	public static void main(String[] args) throws InterruptedException {
 		driver.get("https://admin-demo.nopcommerce.com/");
@@ -120,8 +121,6 @@ public class NopCommerceTestingCls {
 
 //			  - assert hovering over the ? button
 //
-//		WebElement frame = new WebDriverWait(driver, Duration.ofSeconds(3))
-//				.until(driver.findElement(By.id("FullDescription_ifr")));
 
 		Thread.sleep(5000);
 		driver.switchTo().frame("FullDescription_ifr");
@@ -133,13 +132,11 @@ public class NopCommerceTestingCls {
 
 //
 		WebElement skuInput = driver.findElement(By.id("Sku"));
-		String sku = "R2345678";
+		String sku = "R"+skuRnd.nextInt(9999);
 		skuInput.sendKeys(sku);
 		Assert.assertEquals(skuInput.getAttribute("value"), sku);
 //			  - assert hovering over the ? button
 //
-//			- Fill the Categories field.
-
 		driver.findElement(By.cssSelector(".k-multiselect-wrap")).click();
 		WebElement categoriesSelect = (new WebDriverWait(driver, Duration.ofSeconds(5))).until(
 				ExpectedConditions.elementToBeClickable(By.xpath("//ul[@id=\"SelectedCategoryIds_listbox\"]/li[1]")));
@@ -381,13 +378,12 @@ public class NopCommerceTestingCls {
 		
 		saveProductToDiscountBtn.click();
 
-		// Switch back to original browser (first window)
 		driver.switchTo().window(winHandleBefore);
-//			    - assert the hover effect.
-//			    - assert the windows is closed.
-//			    - assert the applied products table is filled with the selected product.
+		List<WebElement> discountProductRow = driver.findElements(By.xpath("//table[@aria-describedby=\"products-grid_info\"]/tbody/tr/td[1]"));
+		Assert.assertTrue(discountProductRow.get(0).getText().contains(fristProduct));
+		
 
-		// driver.close();
+		 driver.close();
 	}
 
 	public static void assertPageUrl(String expectedUrl) {
