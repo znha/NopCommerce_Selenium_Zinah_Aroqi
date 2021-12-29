@@ -3,6 +3,7 @@ package NopCommerceTestingPkg;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -19,6 +20,7 @@ public class NopCommerceTestingCls {
 	public static void main(String[] args) throws InterruptedException {
 		driver.get("https://admin-demo.nopcommerce.com/");
 		driver.manage().window().maximize();
+		JavascriptExecutor jse = (JavascriptExecutor) driver;
 
 		assertPageUrl("https://admin-demo.nopcommerce.com/login?ReturnUrl=%2Fadmin%2F");
 		assertPageTitle("Your store. Login");
@@ -114,7 +116,7 @@ public class NopCommerceTestingCls {
 //
 //		WebElement frame = new WebDriverWait(driver, Duration.ofSeconds(3))
 //				.until(driver.findElement(By.id("FullDescription_ifr")));
-		
+
 		Thread.sleep(5000);
 		driver.switchTo().frame("FullDescription_ifr");
 		WebElement fullDescription = driver.findElement(By.id("tinymce"));
@@ -131,42 +133,52 @@ public class NopCommerceTestingCls {
 //			  - assert hovering over the ? button
 //
 //			- Fill the Categories field.
-		
-		driver.findElement(By.cssSelector(".k-multiselect-wrap")).click();
-		WebElement categoriesSelect = (new WebDriverWait(driver, Duration.ofSeconds(5)))
-     		   .until(ExpectedConditions.elementToBeClickable(By.xpath("//ul[@id=\"SelectedCategoryIds_listbox\"]/li[1]")));
-		categoriesSelect.click();
-		WebElement categoriesTags = (new WebDriverWait(driver, Duration.ofSeconds(5)))
-	     		   .until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//ul[@id=\"SelectedCategoryIds_taglist\"]/li[1]"))));
-		
-		Assert.assertEquals(categoriesSelect.getText(),categoriesTags.getText() );
-		
 
-//			  - assert filling the categories field.
+		driver.findElement(By.cssSelector(".k-multiselect-wrap")).click();
+		WebElement categoriesSelect = (new WebDriverWait(driver, Duration.ofSeconds(5))).until(
+				ExpectedConditions.elementToBeClickable(By.xpath("//ul[@id=\"SelectedCategoryIds_listbox\"]/li[1]")));
+		categoriesSelect.click();
+		driver.findElement(By.xpath("//div[@class=\"card-body\"][1]")).click();
+		WebElement categoriesTags = (new WebDriverWait(driver, Duration.ofSeconds(5))).until(ExpectedConditions
+				.visibilityOf(driver.findElement(By.xpath("//ul[@id=\"SelectedCategoryIds_taglist\"]/li[1]"))));
+
+		// Assert.assertEquals(categoriesSelect.getText(), categoriesTags.getText());
+		// - assert hovering over the ? button
+
+		Boolean pricesCardIsCollapsed = checkCardIsCollapsed("product-price");
+		if (pricesCardIsCollapsed) {
+			driver.findElement(By.id("product-price")).click();
+		}
+
 //			  - assert hovering over the ? button
+//		String price = "200";
+//		WebElement priceInput =driver.findElement(By.cssSelector("input[role=\"spinbutton\"]"));
+//	actionProvider.moveToElement(priceInput).click().perform();
 //
-//			- Click on the prices tab.
 //
-//			  - assert the prices tab is open if not then click.
-//			  - assert hovering over the ? button
-//
-//			- Fill the price field.
-//
-//			  - assert hovering over the ? button
-//			  - assert filling the field.
+//		WebElement priceInputHidden =driver.findElement(By.id("Price"));
+//		jse.executeScript("document.getElementById('Price').setAttribute('value', '200');");
+		// priceInputHidden.sendKeys(price);
+		// Assert.assertEquals(priceInput.getAttribute("value"), price);
+
 //			  - Click on increment button.
 //			    - assert incrementing the field.
 //			  - Click on decrement button.
 //			    - assert decrenmenting the field.
 //
 //			- Check Tax exempt checkbox.
-//
-//			  - assert cheking the checkbox.
+		WebElement taxExemp = driver.findElement(By.id("IsTaxExempt"));
+		taxExemp.click();
+		Assert.assertTrue(taxExemp.isSelected());
+//		  - assert the tax category disappears
+		WebElement pnlTaxCategory = driver.findElement(By.id("pnlTaxCategory"));
+		hasClass(pnlTaxCategory, "d-none");
 //			  - assert hovering over the ? button
-//			  - assert the tax category disappears
-//
-//			- Click on Inventory Tab
-//			  - assert the tab is open if not then click.
+
+		Boolean InventoryCardIsCollapsed = checkCardIsCollapsed("product-inventory");
+		if (InventoryCardIsCollapsed) {
+			driver.findElement(By.id("product-inventory")).click();
+		}
 //			- Select the inventory method.
 //
 //			  - assert the selected item "Track Inventory".
