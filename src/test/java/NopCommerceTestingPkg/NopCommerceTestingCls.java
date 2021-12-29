@@ -70,17 +70,32 @@ public class NopCommerceTestingCls {
 		assertPageHeading("Products");
 		checkActiveNavItem("ul.nav a[href=\"/Admin/Product/List\"]");
 		
-//			  - assert hover over the Add new button.
-//			  - assert the arrow changes.
-//
-//			- CLick on Add new Button.
-//
-//			  - assert the url contians "Product/Create"
-//			  - assert the page heading is "Add a new product"
-//			  - assert the mode button is 'basic'
-//			  - assert the product info tab is open
-//
+		WebElement addNewProductBtn = driver.findElement(By.cssSelector("a[href=\"/Admin/Product/Create\"]"));
+		actionProvider.moveToElement(addNewProductBtn).build().perform();
+		String addNewProductBtnHover = addNewProductBtn.getCssValue("background-color");
+		//Assert.assertEquals("rgba(70, 126, 159, 1)",addNewProductBtnHover); // it evaluates to tow different values ??
+
+		addNewProductBtn.click();
+		assertPageUrl("https://admin-demo.nopcommerce.com/Admin/Product/Create");
+		assertPageTitle("Add a new product / nopCommerce administration");
+		assertPageHeading("Add a new product back to product list");
+
+		WebElement modeChekbox = driver.findElement(By.cssSelector(".onoffswitch-inner"));
+		boolean isBasic = !modeChekbox.getCssValue("margin-left").equals(0);
+		if(!isBasic) {
+			modeChekbox.click();
+		}
+		
+		
+		Boolean productInfoCardIsCollapsed = checkCardIsCollapsed("product-info");
+		if(productInfoCardIsCollapsed) {
+			driver.findElement(By.id("product-info")).click();
+		}
+		
 //			- Fill the product name.
+		WebElement productName = driver.findElement(By.id("Name"));
+		String fristProduct = "first Prodcut By zinah";
+		productName.sendKeys(fristProduct);
 //
 //			  - assert filling the product name.
 //			  - assert hovering over the ? button
@@ -274,6 +289,13 @@ public class NopCommerceTestingCls {
 
 		return false;
 
+	}
+	
+	public static Boolean checkCardIsCollapsed(String cardId) {
+		
+		WebElement elem = driver.findElement(By.id(cardId));
+		return  hasClass(elem, "collapsed-card");
+		
 	}
 
 }
