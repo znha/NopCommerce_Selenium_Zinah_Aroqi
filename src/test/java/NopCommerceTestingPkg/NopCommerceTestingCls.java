@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
@@ -151,15 +152,14 @@ public class NopCommerceTestingCls {
 		}
 
 //			  - assert hovering over the ? button
-//		String price = "200";
-//		WebElement priceInput =driver.findElement(By.cssSelector("input[role=\"spinbutton\"]"));
-//	actionProvider.moveToElement(priceInput).click().perform();
-//
-//
-//		WebElement priceInputHidden =driver.findElement(By.id("Price"));
-//		jse.executeScript("document.getElementById('Price').setAttribute('value', '200');");
-		// priceInputHidden.sendKeys(price);
-		// Assert.assertEquals(priceInput.getAttribute("value"), price);
+		String price = "200";
+		WebElement priceInput = driver.findElement(By.cssSelector("#product-price-area input[role=\"spinbutton\"]"));
+		actionProvider.moveToElement(priceInput).click().perform();
+		WebElement priceInputHidden = driver.findElement(By.id("Price"));
+		priceInputHidden.sendKeys(price);
+		Assert.assertEquals(priceInputHidden.getAttribute("value"), "0" + price);
+		// jse.executeScript("document.getElementById('Price').setAttribute('value',
+		// '200');");
 
 //			  - Click on increment button.
 //			    - assert incrementing the field.
@@ -183,16 +183,9 @@ public class NopCommerceTestingCls {
 //
 //			  - assert the selected item "Track Inventory".
 //			  - assert hovering over the ? button
-//
-//			- Fill Stock Quantity.
-//
-//			  - assert hovering over the ? button
-//			  - assert the value of the input.
-//			  - Click on increment button.
-//			    - assert incrementing the field.
-//			  - Click on decrement button.
-//			    - assert decrenmenting the field.
-//
+		Select inverntoryMethod = new Select(driver.findElement(By.id("ManageInventoryMethodId")));
+		inverntoryMethod.selectByValue("1");
+
 //			- Click on save button.
 //
 //			  - assert hovering over the button.
