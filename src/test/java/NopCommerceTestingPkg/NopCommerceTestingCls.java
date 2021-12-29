@@ -92,7 +92,6 @@ public class NopCommerceTestingCls {
 			driver.findElement(By.id("product-info")).click();
 		}
 		
-//			- Fill the product name.
 		WebElement productName = driver.findElement(By.id("Name"));
 		String fristProduct = "first Prodcut By zinah";
 		productName.sendKeys(fristProduct);
@@ -108,7 +107,6 @@ public class NopCommerceTestingCls {
 		
 //			  - assert hovering over the ? button
 //
-//			- Fill the full description textarea.
 		
 		driver.switchTo().frame("FullDescription_ifr");
 		WebElement fullDescription = driver.findElement(By.id("tinymce"));
@@ -119,12 +117,10 @@ public class NopCommerceTestingCls {
 
 		
 //
-//			  - assert the value of the full description.
-//			  - assert hovering over the ? button
-//
-//			- Fill the SKU field.
-//
-//			  - assert filling the SKU.
+		WebElement skuInput = driver.findElement(By.id("Sku"));
+		String sku = "R2345678";
+		skuInput.sendKeys(fristProduct);
+		Assert.assertEquals(skuInput.getAttribute("value"), sku);
 //			  - assert hovering over the ? button
 //
 //			- Fill the Categories field.
