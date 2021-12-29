@@ -6,6 +6,7 @@ import java.util.Random;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -183,7 +184,6 @@ public class NopCommerceTestingCls {
 		String option = inverntoryMethod.getFirstSelectedOption().getAttribute("value");
 		Assert.assertEquals("1", option);
 
-//			- Click on save button.
 		WebElement saveNewProductBtn = driver.findElement(By.cssSelector("[name = \"save\"]"));
 		actionProvider.moveToElement(saveNewProductBtn).build().perform();
 		String saveNewProductBtnHover = saveNewProductBtn.getCssValue("background-color");
@@ -254,23 +254,35 @@ public class NopCommerceTestingCls {
 		discountType.selectByValue("2");
 		String discountOption = discountType.getFirstSelectedOption().getAttribute("value");
 		Assert.assertEquals("2", discountOption);
-//
-//			- Click on Add new button.
-//
-//			  - assert hover over the button
-//			  - assert the url contins "Discount/Create"
-//			  - assert the page heading is "Add a new discount"
-//
-//			- Fill the Discount name.
-//
-//			  - assert the tooltip
-//			  - assert filling the input.
-//
-//			- Select a discount type
-//
-//			  - assert the selected item is "Assigned to products"
-//			  - assert the tooltip.
-//
+		
+//		WebElement usePercentageInput = driver.findElement(By.id("UsePercentage"));
+//		usePercentageInput.click();
+//		Assert.assertTrue(usePercentageInput.isSelected());
+
+		String discountAmmount = "20";
+		WebElement discountAmmountInput = driver.findElement(By.cssSelector("#pnlDiscountAmount input[role=\"spinbutton\"]"));
+		actionProvider.moveToElement(discountAmmountInput).click().perform();
+		WebElement discountAmmountInputtHidden = driver.findElement(By.id("DiscountAmount"));
+		discountAmmountInputtHidden.sendKeys(discountAmmount);
+		Assert.assertEquals(discountAmmountInputtHidden.getAttribute("value"), "0" + discountAmmount);
+		
+		WebElement statrtDateBtn = driver.findElement(By.cssSelector("[aria-controls=\"StartDateUtc_dateview\"]"));
+		statrtDateBtn.click();
+		WebElement startDateInput = driver.findElement(By.id("StartDateUtc"));
+		String startDatTxt = "12/31/2021 12:00 AM";
+		startDateInput.sendKeys(startDatTxt);
+		Assert.assertEquals(startDateInput.getAttribute("value"), startDatTxt);
+		
+		WebElement endDateBtn = driver.findElement(By.cssSelector("[aria-controls=\"EndDateUtc_dateview\"]"));
+		endDateBtn.click();
+		WebElement endDateInput = driver.findElement(By.id("EndDateUtc"));
+		String endDateText = "2/28/2022 12:00 AM";
+		endDateInput.sendKeys(endDateText);
+		Assert.assertEquals(endDateInput.getAttribute("value"), endDateText);
+		
+		
+
+	
 //			- Fill the start date.
 //
 //			  - assert the filled value.
