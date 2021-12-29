@@ -115,6 +115,8 @@ public class NopCommerceTestingCls {
 		String fullDescriptionText = "first Prodcut full description By zinah";
 		fullDescription.sendKeys(fullDescriptionText);
 		Assert.assertEquals(fullDescription.getText(), fullDescriptionText);
+		driver.switchTo().defaultContent();
+
 		
 //
 //			  - assert the value of the full description.
