@@ -123,7 +123,7 @@ public class NopCommerceTestingCls {
 //
 		WebElement skuInput = driver.findElement(By.id("Sku"));
 		String sku = "R2345678";
-		skuInput.sendKeys(fristProduct);
+		skuInput.sendKeys(sku);
 		Assert.assertEquals(skuInput.getAttribute("value"), sku);
 //			  - assert hovering over the ? button
 //
