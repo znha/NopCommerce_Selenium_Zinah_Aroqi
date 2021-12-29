@@ -161,6 +161,7 @@ public class NopCommerceTestingCls {
 		WebElement priceInput = driver.findElement(By.cssSelector("#product-price-area input[role=\"spinbutton\"]"));
 		actionProvider.moveToElement(priceInput).click().perform();
 		WebElement priceInputHidden = driver.findElement(By.id("Price"));
+		Thread.sleep(5000);
 		priceInputHidden.sendKeys(price);
 		Assert.assertEquals(priceInputHidden.getAttribute("value"), "0" + price);
 		// jse.executeScript("document.getElementById('Price').setAttribute('value',
@@ -330,16 +331,29 @@ public class NopCommerceTestingCls {
 		Select discountTypeInEdit= new Select(driver.findElement(By.id("DiscountTypeId")));
 		String discountOptionInEdit = discountTypeInEdit.getFirstSelectedOption().getAttribute("value");
 		Assert.assertEquals("2", discountOptionInEdit);
-		WebElement startDateInputInEdit = driver.findElement(By.id("StartDateUtc"));
-		Assert.assertEquals(startDateInputInEdit.getAttribute("value"), startDatTxt);
-		WebElement endDateInputInEdit = driver.findElement(By.id("EndDateUtc"));
-		Assert.assertEquals(endDateInputInEdit.getAttribute("value"), endDateText);		
+		
+//		WebElement startDateInputInEdit = driver.findElement(By.id("StartDateUtc"));
+//		Assert.assertEquals(startDateInputInEdit.getAttribute("value"), startDatTxt);
+//		WebElement endDateInputInEdit = driver.findElement(By.id("EndDateUtc"));
+//		Assert.assertEquals(endDateInputInEdit.getAttribute("value"), endDateText);		
 		
 		Boolean appliedProductsCardIsCollapsed = checkCardIsCollapsed("discount-applied-to-products");
 		if (appliedProductsCardIsCollapsed) {
 			driver.findElement(By.id("discount-applied-to-products")).click();
 		}
-//
+		
+		WebElement addNewProductToDiscounBtn = driver.findElement(By.id("btnAddNewProduct"));
+		addNewProductToDiscounBtn.click();
+		String winHandleBefore = driver.getWindowHandle();
+
+		// Perform the click operation that opens new window
+
+		// Switch to new window opened
+		for(String winHandle : driver.getWindowHandles()){
+		    driver.switchTo().window(winHandle);
+		}
+		
+		
 //			- Click on the Add new Product
 //			    - assert the hover on the  button.
 //			    - assert a new windwo opens.
@@ -347,17 +361,28 @@ public class NopCommerceTestingCls {
 //			    - assert the new window haeading is "Add a new product"
 //
 //			- Fill the product name 
-//			    - assert the focus effect.
-//			    - assert the filled value.
-//
-//			- Click the search button.
-//			    - assert the hover effect.
-//			    - assert the product is visible in the table.
-//
-//			- Check the product checkbox.
-//			    - assert the product is checked.
-//
-//			- Click on the save button.
+		WebElement productNameSearchInput = driver.findElement(By.id("SearchProductName"));
+		productNameSearchInput.sendKeys(fristProduct);
+		Assert.assertEquals(productNameSearchInput.getAttribute("value"), fristProduct);
+
+		
+		WebElement searchProductsWindowBtn = driver.findElement(By.id("search-products"));
+		searchProductsWindowBtn.click();
+		
+		Thread.sleep(5000);
+		
+		WebElement firstProductCheckbox = driver.findElement(By.xpath("//table[@id=\"products-grid\"]/tbody/tr/td[1]/input"));
+		firstProductCheckbox.click();
+		Assert.assertTrue(firstProductCheckbox.isSelected());
+		WebElement saveProductToDiscountBtn = driver.findElement(By.cssSelector("[name = \"save\"]"));
+		actionProvider.moveToElement(saveProductToDiscountBtn).build().perform();
+		String saveProductToDiscountHover = saveProductToDiscountBtn.getCssValue("background-color");
+		// Assert.assertEquals("rgba(70, 126, 159, 1)",saveProductToDiscountHover);
+		
+		saveProductToDiscountBtn.click();
+
+		// Switch back to original browser (first window)
+		driver.switchTo().window(winHandleBefore);
 //			    - assert the hover effect.
 //			    - assert the windows is closed.
 //			    - assert the applied products table is filled with the selected product.
