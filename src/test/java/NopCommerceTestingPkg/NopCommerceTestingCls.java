@@ -101,7 +101,7 @@ public class NopCommerceTestingCls {
 		WebElement shortDescription = driver.findElement(By.id("ShortDescription"));
 		String shortDescriptionText = "first Prodcut short description By zinah";
 		shortDescription.sendKeys(shortDescriptionText);
-		Assert.assertEquals(shortDescription.getText(), shortDescriptionText);
+		Assert.assertEquals(shortDescription.getAttribute("value"), shortDescriptionText);
 		
 //
 //			  - assert filling the product name.
