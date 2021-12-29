@@ -108,9 +108,14 @@ public class NopCommerceTestingCls {
 
 		WebElement productName = driver.findElement(By.id("Name"));
 		String fristProduct = "first Prodcut By zinah " + rnd.nextInt(50);
-
 		productName.sendKeys(fristProduct);
 		Assert.assertEquals(productName.getAttribute("value"), fristProduct);
+		
+		WebElement productNameTooltip = driver.findElement(By.xpath("//label[@for=\"Name\"]/following-sibling::div"));
+		actionProvider.moveToElement(productNameTooltip).build().perform();
+		Assert.assertEquals(productNameTooltip.getAttribute("data-original-title"),"The name of the product.");
+		
+		
 
 		WebElement shortDescription = driver.findElement(By.id("ShortDescription"));
 		String shortDescriptionText = "first Prodcut short description By zinah";
