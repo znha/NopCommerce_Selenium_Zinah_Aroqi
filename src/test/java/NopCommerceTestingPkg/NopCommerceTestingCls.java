@@ -265,14 +265,15 @@ public class NopCommerceTestingCls {
 		WebElement discountAmmountInputtHidden = driver.findElement(By.id("DiscountAmount"));
 		discountAmmountInputtHidden.sendKeys(discountAmmount);
 		Assert.assertEquals(discountAmmountInputtHidden.getAttribute("value"), "0" + discountAmmount);
-		
+
 //		WebElement statrtDateBtn = driver.findElement(By.cssSelector("[aria-controls=\"StartDateUtc_dateview\"]"));
 //		statrtDateBtn.click();
 		WebElement startDateInput = driver.findElement(By.id("StartDateUtc"));
 		String startDatTxt = "12/31/2021 12:00 AM";
 		startDateInput.sendKeys(startDatTxt);
 		Assert.assertEquals(startDateInput.getAttribute("value"), startDatTxt);
-		
+
+
 //		WebElement endDateBtn = driver.findElement(By.cssSelector("[aria-controls=\"EndDateUtc_dateview\"]"));
 //		endDateBtn.click();
 		WebElement endDateInput = driver.findElement(By.id("EndDateUtc"));
@@ -324,17 +325,20 @@ public class NopCommerceTestingCls {
 		if (discountInfoCardIsCollapsedAgain) {
 			driver.findElement(By.id("discount-info")).click();
 		}
-//			- Click on Edit of the new Discount.
 		
-//			    - assert hover over the edit button.
-//			   //			    - assert the name input.
-//			    - assert the disoucnt type.
-//			    - assert the start date.
-//			    - assert the end date.
-//
-//			- Click on the Applied to products tab.
-//			    - assert the Applied to products tab is open.
-//			    - assert it contains the products table.
+		Assert.assertEquals(driver.findElement(By.id("Name")).getAttribute("value"), discountNametxt);
+		Select discountTypeInEdit= new Select(driver.findElement(By.id("DiscountTypeId")));
+		String discountOptionInEdit = discountTypeInEdit.getFirstSelectedOption().getAttribute("value");
+		Assert.assertEquals("2", discountOptionInEdit);
+		WebElement startDateInputInEdit = driver.findElement(By.id("StartDateUtc"));
+		Assert.assertEquals(startDateInputInEdit.getAttribute("value"), startDatTxt);
+		WebElement endDateInputInEdit = driver.findElement(By.id("EndDateUtc"));
+		Assert.assertEquals(endDateInputInEdit.getAttribute("value"), endDateText);		
+		
+		Boolean appliedProductsCardIsCollapsed = checkCardIsCollapsed("discount-applied-to-products");
+		if (appliedProductsCardIsCollapsed) {
+			driver.findElement(By.id("discount-applied-to-products")).click();
+		}
 //
 //			- Click on the Add new Product
 //			    - assert the hover on the  button.
