@@ -1,6 +1,7 @@
 package NopCommerceTestingPkg;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Random;
 
 import org.openqa.selenium.By;
@@ -106,7 +107,7 @@ public class NopCommerceTestingCls {
 
 		WebElement productName = driver.findElement(By.id("Name"));
 		String fristProduct = "first Prodcut By zinah " + rnd.nextInt(50);
-		;
+		
 		productName.sendKeys(fristProduct);
 		Assert.assertEquals(productName.getAttribute("value"), fristProduct);
 //		  - assert hovering over the ? button
@@ -179,6 +180,8 @@ public class NopCommerceTestingCls {
 //			  - assert hovering over the ? button
 		Select inverntoryMethod = new Select(driver.findElement(By.id("ManageInventoryMethodId")));
 		inverntoryMethod.selectByValue("1");
+		String option = inverntoryMethod.getFirstSelectedOption().getAttribute("value");
+		Assert.assertEquals("1", option);
 
 //			- Click on save button.
 		WebElement saveNewProductBtn = driver.findElement(By.cssSelector("[name = \"save\"]"));
@@ -205,26 +208,52 @@ public class NopCommerceTestingCls {
 
 //			    - assert there is a row that has the filled proudct info.
 		Thread.sleep(5000); // It didn't work except with it
-		WebElement producRow = (new WebDriverWait(driver, Duration.ofSeconds(5))).until(ExpectedConditions
-				.visibilityOf(driver.findElement(By.xpath("//table/tbody/tr/td[3]"))));
-		Assert.assertTrue(producRow.getSize().equals(1));
-		WebElement productsTable = driver.findElement(By.id("products-grid_wrapper"));
-//		Assert.assertTrue(producRow.getText().contains(fristProduct));
-		Assert.assertTrue(productsTable.getText().contains(fristProduct));
+		List<WebElement> producRow = driver.findElements(By.xpath("//table/tbody/tr/td[3]"));
+		Assert.assertTrue(producRow.get(0).getText().contains(fristProduct));
 
-//			- Click on Promotions link
-//
-//			  - assert the Promoitions link is the current active element.
-//			  - assert the submenu appears
-//			  - assert the arrow changes.
-//
-//			- Click on the Discount link.
-//
-//			  - assert the Discoun link is the current active element.
-//			  - assert the arrow changes.
-//			  - assert the url contians "Discount/List"
-//			  - assert the page title.
-//			  - assert the page heading is "Discounts"
+		WebElement promotionsLink = driver.findElement(By.xpath("//nav/ul/li[5]"));
+		promotionsLink.click();
+		hasClass(promotionsLink, "menu-open");
+		Boolean promotionsSubMenuIsVisible = driver.findElement(By.xpath("//nav/ul/li[5]/ul")).getCssValue("display")
+				.equals("block");
+		Assert.assertTrue(promotionsSubMenuIsVisible);
+
+		WebElement discountsLink = driver.findElement(By.cssSelector("ul.nav a[href=\"/Admin/Discount/List\"]"));
+		actionProvider.moveToElement(discountsLink).build().perform();
+		String discountsLinkHover = discountsLink.getCssValue("color");
+		// Assert.assertEquals("rgba(255, 255, 255, 1)", discountsLinkHover);
+
+		discountsLink.click();
+		assertPageUrl("https://admin-demo.nopcommerce.com/Admin/Discount/List");
+		assertPageTitle("Discounts / nopCommerce administration");
+		assertPageHeading("Discounts");
+		checkActiveNavItem("ul.nav a[href=\"/Admin/Discount/List\"]");
+		
+		WebElement addNewDiscountBtn = driver.findElement(By.cssSelector("a[href=\"/Admin/Discount/Create\"]"));
+		actionProvider.moveToElement(addNewDiscountBtn).build().perform();
+		String addNewDiscountBtnHover = addNewDiscountBtn.getCssValue("background-color");
+		// Assert.assertEquals("rgba(70, 126, 159, 1)",addNewProductBtnHover); // it
+		// evaluates to tow different values ??
+
+		addNewDiscountBtn.click();
+		assertPageUrl("https://admin-demo.nopcommerce.com/Admin/Discount/Create");
+		assertPageTitle("Add a new discount / nopCommerce administration");
+		assertPageHeading("Add a new discount back to discount list");
+
+		Boolean discountInfoCardIsCollapsed = checkCardIsCollapsed("discount-info");
+		if (discountInfoCardIsCollapsed) {
+			driver.findElement(By.id("discount-info")).click();
+		}
+
+		WebElement discountName = driver.findElement(By.id("Name"));
+		String discountNametxt = "first discount By zinah " + rnd.nextInt(50);
+		discountName.sendKeys(discountNametxt);
+		Assert.assertEquals(discountName.getAttribute("value"), discountNametxt);
+
+		Select discountType= new Select(driver.findElement(By.id("DiscountTypeId")));
+		discountType.selectByValue("2");
+		String discountOption = discountType.getFirstSelectedOption().getAttribute("value");
+		Assert.assertEquals("2", discountOption);
 //
 //			- Click on Add new button.
 //
