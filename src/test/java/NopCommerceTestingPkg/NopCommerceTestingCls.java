@@ -97,22 +97,25 @@ public class NopCommerceTestingCls {
 		String fristProduct = "first Prodcut By zinah";
 		productName.sendKeys(fristProduct);
 		Assert.assertEquals(productName.getAttribute("value"), fristProduct);
-		
+//		  - assert hovering over the ? button
+
 		WebElement shortDescription = driver.findElement(By.id("ShortDescription"));
 		String shortDescriptionText = "first Prodcut short description By zinah";
 		shortDescription.sendKeys(shortDescriptionText);
 		Assert.assertEquals(shortDescription.getAttribute("value"), shortDescriptionText);
 		
-//
-//			  - assert filling the product name.
-//			  - assert hovering over the ? button
-//
-//			- Fill the proudct short description.
-//
-//			  - assert filling the short description.
+		
+		
 //			  - assert hovering over the ? button
 //
 //			- Fill the full description textarea.
+		
+		driver.switchTo().frame("FullDescription_ifr");
+		WebElement fullDescription = driver.findElement(By.id("tinymce"));
+		String fullDescriptionText = "first Prodcut full description By zinah";
+		fullDescription.sendKeys(fullDescriptionText);
+		Assert.assertEquals(fullDescription.getText(), fullDescriptionText);
+		
 //
 //			  - assert the value of the full description.
 //			  - assert hovering over the ? button
